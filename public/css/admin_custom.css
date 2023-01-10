@@ -1,0 +1,18 @@
+body{
+    font-family: "Sora", serif;
+    font-size: 0.85em;
+}
+.dropdown-item, .form-control{
+    font-size: 0.85em !important;
+}
+.btn,.dropdown-item{
+    font-weight: 300;
+}
+.card, .dropdown-menu, .modal-content {
+    border:none ;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    border-radius: 10px;
+}
+label:not(.form-check-label):not(.custom-file-label){
+    font-weight: 500;
+}
