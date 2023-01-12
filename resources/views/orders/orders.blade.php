@@ -342,6 +342,10 @@
                 } else {
                     toastr.error(res.message ?? 'Could not download/update orders', 'Download/Update fail');
                 }
+            }).fail(()=>{
+                toastr.error('Could not download/update orders', 'Download/Update fail');
+                loader.hide();
+                $(element).prop('disabled', false);
             }).done(() => {
                 loader.hide();
                 $(element).prop('disabled', false);

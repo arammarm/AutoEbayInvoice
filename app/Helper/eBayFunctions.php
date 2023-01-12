@@ -35,8 +35,8 @@ class eBayFunctions {
 
         if ( ! empty( $orderArray ) ) {
             foreach ( $orderArray as $order ) {
-
-                $ref = "EBAY " . (string) $order['ShippingAddress']->Country . " " . eBayFunctions::getSalesRecordNumber( $order );
+                $purchaseNumber = eBayFunctions::getSalesRecordNumber( json_encode( $order ) );
+                $ref            = "EBAY " . (string) $order['ShippingAddress']->Country . " " . $purchaseNumber;
 
 
                 $orderDetails = Order::where( 'order_id', $order['OrderID'] )->first();
@@ -52,7 +52,7 @@ class eBayFunctions {
                         'ref'              => $ref,
                         'country'          => (string) $order['ShippingAddress']->Country,
                         'last_downloaded'  => self::CDate( time() ),
-                        'purchase_history' => eBayFunctions::getSalesRecordNumber( $order ),
+                        'purchase_history' => $purchaseNumber,
                     ] );
                 } else {
                     $id     = $orderDetails->id;
@@ -66,7 +66,7 @@ class eBayFunctions {
                         'ref'              => $ref,
                         'country'          => (string) $order['ShippingAddress']->Country,
                         'last_downloaded'  => self::CDate( time() ),
-                        'purchase_history' => eBayFunctions::getSalesRecordNumber( $order ),
+                        'purchase_history' => $purchaseNumber,
                     ] );
                 }
             }
