@@ -29,7 +29,7 @@ class eBayApi {
                 <PageNumber>' . $pageNo . '</PageNumber>
             </Pagination>
             <WarningLevel>High</WarningLevel>
-             <CreateTimeFrom>' . date( 'Y-m-d', strtotime( '-2 days' ) ) . 'T00:00:00.000Z</CreateTimeFrom>
+             <CreateTimeFrom>' . date( 'Y-m-d', strtotime( '-7 days' ) ) . 'T00:00:00.000Z</CreateTimeFrom>
             <CreateTimeTo>' . date( 'Y-m-d', strtotime( 'now' ) ) . 'T23:59:59.000Z</CreateTimeTo>
           <OrderRole>Seller</OrderRole>
         </GetOrdersRequest>';

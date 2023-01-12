@@ -135,10 +135,11 @@ class OrderController extends Controller {
         $tempD['order_id']        = $order->order_id;
         $tempD['buyer']           = $order->buyer;
 
-        $tAddress = $invoiceDetails['address'] . ",<br>";
+        $tAddress = $invoiceDetails['buyer_name'] . "<br>" . $invoiceDetails['address'] . ",<br>";
         if ( ! empty( $invoiceDetails['address_2'] ) ) {
             $tAddress .= $invoiceDetails['address_2'] . "<br>";
         }
+
         $tAddress         .= $invoiceDetails['city'] . ", " . $invoiceDetails['state'] . "<br>" . $invoiceDetails['zip_code'] . " " . $invoiceDetails['country'];
         $tempD['address'] = $tAddress;
 

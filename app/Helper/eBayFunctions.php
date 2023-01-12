@@ -426,4 +426,18 @@ class eBayFunctions {
 
         return $country;
     }
+
+    static function getCountryFlagByCode( $code, $type = 'emoji' ) {
+        $json         = file_get_contents( public_path( 'json/country.json' ) );
+        $countryArray = json_decode( $json );
+        $country      = 'None';
+
+        foreach ( $countryArray as $value ) {
+            if ( $value->code == $code ) {
+                $country = ( $type == 'emoji' ) ? $value->emoji : $value->image;
+            }
+        };
+
+        return $country;
+    }
 }

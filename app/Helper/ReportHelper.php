@@ -30,8 +30,27 @@ class ReportHelper {
         return $data;
     }
 
-    public static function getDurationLabel( $key ) {
-        return ReportHelper::$durations[ $key ];
+    public static function getDurationLabel( $key, $dataCount ) {
+        $counter = '';
+        switch ( $key ) {
+            case "yearly":
+                $counter = "$dataCount Years";
+                break;
+            case "year-quarter":
+                $counter = "$dataCount Quarter Years";
+                break;
+            case "monthly":
+                $counter = "$dataCount Months";
+                break;
+            case "weekly":
+                $counter = "$dataCount Weeks";
+                break;
+            case "daily":
+                $counter = "$dataCount Days";
+                break;
+        }
+
+        return ReportHelper::$durations[ $key ] . " Sales (Past $counter)";
     }
 
 

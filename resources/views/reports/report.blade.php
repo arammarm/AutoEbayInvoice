@@ -83,7 +83,7 @@
                                 <select class="form-control " id="s-filter-country">
                                     <option value="">All</option>
                                     @foreach($countries as $country)
-                                        <option value="{{$country['code']}}">{{$country['name']}}</option>
+                                        <option value="{{$country['code']}}">{{$country['flag']}} &nbsp; {{$country['name']}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -130,7 +130,7 @@
                             <select name="country" class="form-control " id="i-filter-country">
                                 <option value="">All</option>
                                 @foreach($countries as $country)
-                                    <option @if(old('country') == $country['code']) selected @endif value="{{$country['code']}}">{{$country['name']}}</option>
+                                    <option @if(old('country') == $country['code']) selected @endif value="{{$country['code']}}">{{$country['flag']}} &nbsp; {{$country['name']}}</option>
                                 @endforeach
                             </select>
                         </div>

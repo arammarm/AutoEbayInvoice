@@ -24,7 +24,11 @@ class ReportController extends Controller {
 
         $countries = Order::select( 'country' )->groupBy( 'country' )->pluck( 'country' )->toArray();
         foreach ( $countries as $country ) {
-            $data['countries'][] = [ 'code' => $country, 'name' => eBayFunctions::getCountryByCode( $country ) ];
+            $data['countries'][] = [
+                'code' => $country,
+                'name' => eBayFunctions::getCountryByCode( $country ),
+                'flag' => eBayFunctions::getCountryFlagByCode( $country )
+            ];
         }
 
         $data['years']     = Order::select( DB::raw( 'YEAR(ordered_date) as year' ) )->groupBy( DB::raw( 'YEAR(ordered_date)' ) )->pluck( 'year' )->toArray();
@@ -73,7 +77,7 @@ class ReportController extends Controller {
                 'error' => 0,
                 'data'  => [
                     'raw_data'   => $rec,
-                    'graph_data' => ReportHelper::setUpDailyData( $rec, ReportHelper::getDurationLabel( $duration ) . " Sales" )
+                    'graph_data' => ReportHelper::setUpDailyData( $rec, ReportHelper::getDurationLabel( $duration, count( $rec ) ) )
                 ]
             ] );
         }
