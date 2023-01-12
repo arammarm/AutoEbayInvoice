@@ -183,66 +183,68 @@
 @stop
 
 @section('js')
-    <script>
-        $(function () {
-            var chartCanvas = initiateChartJs({
-                labels: ['loading'],
-                datasets: []
-            });
-            setGraph();
-            $(document).on('change', '#s-filter-country, #s-filter-duration', function () {
-                setGraph();
-            });
+    @if($total['count'] != 0)
+        <script>
 
-
-            function setGraph() {
-                $('#report-loader').show();
-                let country = $('#s-filter-country').val();
-                let duration = $('#s-filter-duration').val();
-                $.post(`{{route('reports-graph-data')}}`, {_token: `{{csrf_token()}}`, country: country, duration: duration}, (res) => {
-                    if (res.error === 0) {
-                        $('#report-summary-container').html('');
-                        chartCanvas.destroy();
-                        chartCanvas = initiateChartJs(res.data.graph_data);
-                        $('#report-summary-loader').show();
-                        $.post(`{{route('reports-summary-view')}}`, {
-                            _token: `{{csrf_token()}}`,
-                            raw_data: res.data.raw_data,
-                            duration: duration
-                        }, (viewRes) => {
-                            $('#report-summary-container').html(viewRes);
-                        }).fail(() => {
-                            $('#report-summary-loader').hide();
-                            toastr.error('Could not get response from the request', 'Request failed');
-                        }).done(() => {
-                            $('#report-summary-loader').hide();
-                        });
-                        return;
-                    }
-                    toastr.error(res.message ?? 'Could not get response from the request', 'Request failed');
-                }).fail(() => {
-                    $('#report-loader').hide();
-                    toastr.error('Could not get response from the request', 'Request failed');
-                }).done(() => {
-                    $('#report-loader').hide();
+            $(function () {
+                var chartCanvas = initiateChartJs({
+                    labels: ['loading'],
+                    datasets: []
                 });
-            }
-        });
+                setGraph();
+                $(document).on('change', '#s-filter-country, #s-filter-duration', function () {
+                    setGraph();
+                });
 
-        function initiateChartJs(data) {
-            const ctx = document.getElementById('myChart');
-            return new Chart(ctx, {
-                type: 'line',
-                data: data,
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
+
+                function setGraph() {
+                    $('#report-loader').show();
+                    let country = $('#s-filter-country').val();
+                    let duration = $('#s-filter-duration').val();
+                    $.post(`{{route('reports-graph-data')}}`, {_token: `{{csrf_token()}}`, country: country, duration: duration}, (res) => {
+                        if (res.error === 0) {
+                            $('#report-summary-container').html('');
+                            chartCanvas.destroy();
+                            chartCanvas = initiateChartJs(res.data.graph_data);
+                            $('#report-summary-loader').show();
+                            $.post(`{{route('reports-summary-view')}}`, {
+                                _token: `{{csrf_token()}}`,
+                                raw_data: res.data.raw_data,
+                                duration: duration
+                            }, (viewRes) => {
+                                $('#report-summary-container').html(viewRes);
+                            }).fail(() => {
+                                $('#report-summary-loader').hide();
+                                toastr.error('Could not get response from the request', 'Request failed');
+                            }).done(() => {
+                                $('#report-summary-loader').hide();
+                            });
+                            return;
                         }
-                    }
+                        toastr.error(res.message ?? 'Could not get response from the request', 'Request failed');
+                    }).fail(() => {
+                        $('#report-loader').hide();
+                        toastr.error('Could not get response from the request', 'Request failed');
+                    }).done(() => {
+                        $('#report-loader').hide();
+                    });
                 }
             });
-        }
 
-    </script>
+            function initiateChartJs(data) {
+                const ctx = document.getElementById('myChart');
+                return new Chart(ctx, {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+        </script>@endif
 @stop

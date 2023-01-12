@@ -18,7 +18,8 @@ class Order extends Model {
         'invoice_details',
         'ref',
         'country',
-        'last_downloaded'
+        'last_downloaded',
+        'purchase_history'
     ];
 
     protected $casts = [];

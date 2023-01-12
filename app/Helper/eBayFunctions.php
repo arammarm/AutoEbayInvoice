@@ -35,35 +35,38 @@ class eBayFunctions {
 
         if ( ! empty( $orderArray ) ) {
             foreach ( $orderArray as $order ) {
-                $invoiceCount = Order::select( 'id' )->where( 'country', (string) $order['ShippingAddress']->Country )->count();
-                $ref          = "EBAY " . (string) $order['ShippingAddress']->Country . " " . sprintf( "%05d", ( $invoiceCount + 1 ) );
+
+                $ref = "EBAY " . (string) $order['ShippingAddress']->Country . " " . eBayFunctions::getSalesRecordNumber( $order );
+
+
                 $orderDetails = Order::where( 'order_id', $order['OrderID'] )->first();
                 if ( $orderDetails == null ) {
                     $insert = Order::create( [
-                        'order_id'        => $order['OrderID'],
-                        'order_status'    => $order['OrderStatus'],
-                        'total'           => $order['Total'],
-                        'ordered_date'    => self::CDate( strtotime( $order['CreatedTime'] ) ),
-                        'buyer'           => $order['BuyerUserID'],
-                        'order_detail'    => json_encode( $order ),
-                        'invoice_details' => json_encode( [] ),
-                        'ref'             => $ref,
-                        'country'         => (string) $order['ShippingAddress']->Country,
-                        'last_downloaded' => self::CDate( time() ),
-
+                        'order_id'         => $order['OrderID'],
+                        'order_status'     => $order['OrderStatus'],
+                        'total'            => $order['Total'],
+                        'ordered_date'     => self::CDate( strtotime( $order['CreatedTime'] ) ),
+                        'buyer'            => $order['BuyerUserID'],
+                        'order_detail'     => json_encode( $order ),
+                        'invoice_details'  => json_encode( [] ),
+                        'ref'              => $ref,
+                        'country'          => (string) $order['ShippingAddress']->Country,
+                        'last_downloaded'  => self::CDate( time() ),
+                        'purchase_history' => eBayFunctions::getSalesRecordNumber( $order ),
                     ] );
                 } else {
                     $id     = $orderDetails->id;
                     $update = Order::where( 'id', $id )->update( [
-                        'order_status'    => $order['OrderStatus'],
-                        'total'           => $order['Total'],
-                        'ordered_date'    => self::CDate( strtotime( $order['CreatedTime'] ) ),
-                        'buyer'           => $order['BuyerUserID'],
-                        'order_detail'    => json_encode( $order ),
-                        'invoice_details' => json_encode( [] ),
-                        'ref'             => $ref,
-                        'country'         => (string) $order['ShippingAddress']->Country,
-                        'last_downloaded' => self::CDate( time() ),
+                        'order_status'     => $order['OrderStatus'],
+                        'total'            => $order['Total'],
+                        'ordered_date'     => self::CDate( strtotime( $order['CreatedTime'] ) ),
+                        'buyer'            => $order['BuyerUserID'],
+                        'order_detail'     => json_encode( $order ),
+                        'invoice_details'  => json_encode( [] ),
+                        'ref'              => $ref,
+                        'country'          => (string) $order['ShippingAddress']->Country,
+                        'last_downloaded'  => self::CDate( time() ),
+                        'purchase_history' => eBayFunctions::getSalesRecordNumber( $order ),
                     ] );
                 }
             }
