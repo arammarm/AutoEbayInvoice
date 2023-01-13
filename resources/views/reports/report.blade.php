@@ -158,6 +158,7 @@
                             <div class="form-group">
                                 <label>Month</label>
                                 <select name="month" class="form-control" id="i-filter-month">
+                                    <option value="all">All</option>
                                     @for($x=1;$x<=12; $x++ )
                                         <option @if(old('month') == $x) selected @endif >{{$x}}</option>
                                     @endfor
@@ -167,7 +168,15 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>&nbsp;</label>
-                                <button class="btn btn-success form-control">Download</button>
+                                <br>
+                                <button class="btn btn-success " onclick="loading(this, '#i-download-form')">
+                                    <span
+                                        style="display: none"
+                                        class="spinner-grow spinner-grow-sm"
+                                        role="status"
+                                        aria-hidden="true"></span> &nbsp; Download
+                                </button>
+
                             </div>
                         </div>
 
@@ -229,7 +238,15 @@
                         $('#report-loader').hide();
                     });
                 }
+
+
             });
+
+            function loading(element, formClass) {
+                $(formClass).submit();
+                $(element).prop('disabled', true);
+                $(element).find('span').show();
+            }
 
             function initiateChartJs(data) {
                 const ctx = document.getElementById('myChart');

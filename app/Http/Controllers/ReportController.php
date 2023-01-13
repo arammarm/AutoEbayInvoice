@@ -101,7 +101,12 @@ class ReportController extends Controller {
             if ( $country != null ) {
                 return $query->where( 'country', $country );
             }
-        } )->whereYear( 'ordered_date', $year )->whereMonth( 'ordered_date', $month )->get();
+        } )->whereYear( 'ordered_date', $year )->where( function ( $query ) use ( $month ) {
+            if ( $month != 'all' ) {
+                return $query->whereMonth( 'ordered_date', $month );
+            }
+        } )->get();
+
 
         if ( isset( $recs[0] ) ) {
             $filePaths = [];

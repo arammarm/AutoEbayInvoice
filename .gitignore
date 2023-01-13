@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
+/public/invoices*
 /storage/*.key
 /storage/orders
 /vendor
