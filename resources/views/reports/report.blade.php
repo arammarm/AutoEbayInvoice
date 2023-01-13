@@ -169,12 +169,8 @@
                             <div class="form-group">
                                 <label>&nbsp;</label>
                                 <br>
-                                <button class="btn btn-success " onclick="loading(this, '#i-download-form')">
-                                    <span
-                                        style="display: none"
-                                        class="spinner-grow spinner-grow-sm"
-                                        role="status"
-                                        aria-hidden="true"></span> &nbsp; Download
+                                <button class="btn btn-success ">
+                                  Download
                                 </button>
 
                             </div>
@@ -241,12 +237,6 @@
 
 
             });
-
-            function loading(element, formClass) {
-                $(formClass).submit();
-                $(element).prop('disabled', true);
-                $(element).find('span').show();
-            }
 
             function initiateChartJs(data) {
                 const ctx = document.getElementById('myChart');
