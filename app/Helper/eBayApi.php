@@ -14,6 +14,7 @@ class eBayApi {
                 array_push( $orderArray, (array) $order );
             }
         }
+
         return $orderArray;
     }
 
@@ -25,13 +26,14 @@ class eBayApi {
           </RequesterCredentials>
             <ErrorLanguage>en_US</ErrorLanguage>
             <Pagination>
-                <EntriesPerPage>10</EntriesPerPage>
+                <EntriesPerPage>100</EntriesPerPage>
                 <PageNumber>' . $pageNo . '</PageNumber>
             </Pagination>
             <WarningLevel>High</WarningLevel>
-             <CreateTimeFrom>' . date( 'Y-m-d', strtotime( '-7 days' ) ) . 'T00:00:00.000Z</CreateTimeFrom>
+            <CreateTimeFrom>' . date( 'Y-m-d', strtotime( '-30 days' ) ) . 'T00:00:00.000Z</CreateTimeFrom>
             <CreateTimeTo>' . date( 'Y-m-d', strtotime( 'now' ) ) . 'T23:59:59.000Z</CreateTimeTo>
           <OrderRole>Seller</OrderRole>
+          <OrderStatus>All</OrderStatus>
         </GetOrdersRequest>';
 
         return $this->sendRequest( $postData, 'GetOrders' );
