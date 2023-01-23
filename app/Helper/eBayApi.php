@@ -20,8 +20,7 @@ class eBayApi {
 
     public function downloadOrders( $pageNo = 1 ) {
 
-//        $dateFrom = date( 'Y-m-d', strtotime( '-7 days' ) );
-        $dateFrom = '2023-01-01';
+        $dateFrom = date( 'Y-m-d', strtotime( '-7 days' ) );
         $dateTo   = date( 'Y-m-d', strtotime( 'now' ) );
 
         $postData = '<?xml version="1.0" encoding="utf-8"?>
