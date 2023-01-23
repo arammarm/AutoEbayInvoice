@@ -19,6 +19,11 @@ class eBayApi {
     }
 
     public function downloadOrders( $pageNo = 1 ) {
+
+//        $dateFrom = date( 'Y-m-d', strtotime( '-7 days' ) );
+        $dateFrom = '2023-01-01';
+        $dateTo   = date( 'Y-m-d', strtotime( 'now' ) );
+
         $postData = '<?xml version="1.0" encoding="utf-8"?>
         <GetOrdersRequest xmlns="urn:ebay:apis:eBLBaseComponents">
           <RequesterCredentials>
@@ -30,8 +35,8 @@ class eBayApi {
                 <PageNumber>' . $pageNo . '</PageNumber>
             </Pagination>
             <WarningLevel>High</WarningLevel>
-            <CreateTimeFrom>' . date( 'Y-m-d', strtotime( '-30 days' ) ) . 'T00:00:00.000Z</CreateTimeFrom>
-            <CreateTimeTo>' . date( 'Y-m-d', strtotime( 'now' ) ) . 'T23:59:59.000Z</CreateTimeTo>
+            <CreateTimeFrom>' . $dateFrom . 'T00:00:00.000Z</CreateTimeFrom>
+            <CreateTimeTo>' . $dateTo . 'T23:59:59.000Z</CreateTimeTo>
           <OrderRole>Seller</OrderRole>
           <OrderStatus>All</OrderStatus>
         </GetOrdersRequest>';

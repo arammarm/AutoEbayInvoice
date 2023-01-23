@@ -334,7 +334,7 @@
             let loader = $('#downloadOrderLoader').show();
             $(element).prop('disabled', true);
             $.post('{{route('orders-download')}}', {_token: '{{csrf_token()}}'}, (res) => {
-                if (res.error == 0) {
+                if (res.error === 0) {
                     toastr.success('Order has been download and updated', 'Updated');
                     setTimeout(() => {
                         window.location.reload();
