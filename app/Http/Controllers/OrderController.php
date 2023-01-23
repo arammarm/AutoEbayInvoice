@@ -6,6 +6,7 @@ use App\Helper\eBayFunctions;
 use App\Models\EmailTemplate;
 use App\Models\Order;
 use App\Models\WhatsappTemplate;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -23,6 +24,7 @@ class OrderController extends Controller {
         }
         $data['whatsapp_templates'] = WhatsappTemplate::where( 'active', 1 )->get();
         $data['email_templates']    = EmailTemplate::where( 'active', 1 )->get();
+        $data['last_downloaded']    = Carbon::parse($orders[0]['last_downloaded'])->diffForHumans() ?? null;
 
         return view( 'orders.orders', $data );
     }
@@ -160,4 +162,6 @@ class OrderController extends Controller {
 
         return response()->json( [ 'error' => 0, 'Orders has been updated' ] );
     }
+
+
 }

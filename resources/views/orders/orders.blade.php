@@ -13,14 +13,16 @@
                 <div class="col">
 
                     <div class="d-flex justify-content-end">
-                        <div class="">
-                            <button onclick="downloadOrderAjax(this)" class="btn btn-outline-primary">
-                                <div id="downloadOrderLoader" class="spinner-grow spinner-grow-sm text-primary" role="status">
-                                    <span class="sr-only">Loading...</span>
-                                </div> &nbsp;
-                                Update Orders
-                            </button>
-                        </div>
+                        @if($last_downloaded)
+                            <div class="btn "><small>Last downloaded:</small> {{$last_downloaded}}</div>
+                        @endif
+                        <button onclick="downloadOrderAjax(this)" class="btn btn-outline-primary">
+                            <div id="downloadOrderLoader" class="spinner-grow spinner-grow-sm text-primary" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div> &nbsp;
+                            Update Orders
+                        </button>
+
                     </div>
                 </div>
             </div>
@@ -342,7 +344,7 @@
                 } else {
                     toastr.error(res.message ?? 'Could not download/update orders', 'Download/Update fail');
                 }
-            }).fail(()=>{
+            }).fail(() => {
                 toastr.error('Could not download/update orders', 'Download/Update fail');
                 loader.hide();
                 $(element).prop('disabled', false);

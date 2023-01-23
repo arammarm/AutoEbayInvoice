@@ -8,6 +8,10 @@ use App\Models\WhatsappTemplate;
 use Illuminate\Http\Request;
 
 class SettingsController extends Controller {
+    public function __construct() {
+        WhatsappTemplate::requiredTemplate();
+        EmailTemplate::requiredTemplate();
+    }
 
     public function whatsapp() {
         $data              = [];
@@ -29,7 +33,11 @@ class SettingsController extends Controller {
     }
 
     public function getWATemplate( $id ) {
-        $rec = WhatsappTemplate::where( 'id', $id )->first();
+        $rec       = WhatsappTemplate::where( 'id', $id )->first();
+        $rec->auto = false;
+        if ( in_array( $rec->template_name, WhatsappTemplate::$requiredTemplates ) ) {
+            $rec->auto = true;
+        }
 
         return response()->json( [ 'error' => 0, 'data' => $rec ] );
     }
@@ -62,7 +70,11 @@ class SettingsController extends Controller {
     }
 
     public function getEmailTemplate( $id ) {
-        $rec = EmailTemplate::where( 'id', $id )->first();
+        $rec       = EmailTemplate::where( 'id', $id )->first();
+        $rec->auto = false;
+        if ( in_array( $rec->template_name, EmailTemplate::$requiredTemplates ) ) {
+            $rec->auto = true;
+        }
 
         return response()->json( [ 'error' => 0, 'data' => $rec ] );
     }
@@ -87,6 +99,7 @@ class SettingsController extends Controller {
         $id         = request()->input( 'id' );
         $percentage = request()->input( 'percentage' );
         VatConfig::where( 'id', $id )->update( [ 'percentage' => $percentage ] );
+
         return response()->json( [ 'error' => 0, 'message' => 'Successfully saved' ] );
     }
 }

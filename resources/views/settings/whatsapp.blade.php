@@ -37,9 +37,11 @@
                             <button class="btn btn-primary btn-sm editTemplate"
                                     data-id="{{ $tpl->id }}">Edit
                             </button>
-                            <button class="btn btn-danger btn-sm removeTemplate"
-                                    data-id="{{ $tpl->id }}">Remove
-                            </button>
+                            @if(!in_array($tpl->template_name,\App\Models\WhatsappTemplate::$requiredTemplates))
+                                <button class="btn btn-danger btn-sm removeTemplate"
+                                        data-id="{{ $tpl->id }}">Remove
+                                </button>
+                            @endif
                         </td>
                     </tr>
                 @endforeach
@@ -98,6 +100,11 @@
                         let name = res.data.template_name;
                         let content = res.data.template_content;
                         let active = res.data.active;
+
+                        $('[name="template_name"]').prop('disabled', false);
+                        if (res.data?.auto === true) {
+                            $('[name="template_name"]').prop('disabled', true);
+                        }
 
                         $('#whatsappTemplateModal').modal('show');
 
