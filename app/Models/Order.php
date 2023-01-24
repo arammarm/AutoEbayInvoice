@@ -19,7 +19,15 @@ class Order extends Model {
         'ref',
         'country',
         'last_downloaded',
-        'purchase_history'
+        'purchase_history',
+        'whatsapp_received',
+        'whatsapp_received_date',
+        'whatsapp_shipped',
+        'whatsapp_shipped_date',
+        'whatsapp_delivered',
+        'whatsapp_delivered_date',
+        'email_complete',
+        'email_complete_date'
     ];
 
     protected $casts = [];

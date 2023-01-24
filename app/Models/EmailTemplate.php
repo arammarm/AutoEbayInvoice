@@ -12,6 +12,7 @@ class EmailTemplate extends Model {
 
     public static $requiredTemplates = [
         'auto_received_order',
+        'auto_received_order_es',
 //        'auto_shipped_order',
 //        'auto_delivered_order'
     ];

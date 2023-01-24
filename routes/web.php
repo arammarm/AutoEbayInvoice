@@ -25,6 +25,8 @@ Route::get( '/', function () {
 
 Auth::routes();
 
+Route::get( '/run', [ \App\Http\Controllers\CronController::class, 'runAlerts' ] );
+
 Route::group( [ 'middleware' => 'auth' ], function () {
     Route::get( '/home', [ HomeController::class, 'index' ] )->name( 'home' );
 

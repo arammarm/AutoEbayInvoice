@@ -10,7 +10,14 @@ class WhatsappTemplate extends Model {
 
     protected $fillable = [ 'template_name', 'template_content', 'active' ];
 
-    public static $requiredTemplates = [ 'auto_received_order', 'auto_shipped_order', 'auto_delivered_order' ];
+    public static $requiredTemplates = [
+        'auto_received_order',
+        'auto_shipped_order',
+        'auto_delivered_order',
+        'auto_received_order_es',
+        'auto_shipped_order_es',
+        'auto_delivered_order_es'
+    ];
 
     public static function requiredTemplate() {
         foreach ( self::$requiredTemplates as $required_template ) {

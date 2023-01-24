@@ -24,7 +24,7 @@ class OrderController extends Controller {
         }
         $data['whatsapp_templates'] = WhatsappTemplate::where( 'active', 1 )->get();
         $data['email_templates']    = EmailTemplate::where( 'active', 1 )->get();
-        $data['last_downloaded']    = Carbon::parse($orders[0]['last_downloaded'])->diffForHumans() ?? null;
+        $data['last_downloaded']    = Carbon::parse( $orders[0]['last_downloaded'] )->diffForHumans() ?? null;
 
         return view( 'orders.orders', $data );
     }
@@ -56,10 +56,22 @@ class OrderController extends Controller {
         return redirect()->back()->with( [ 'error' => $error, 'message' => $message ] );
     }
 
-    public function sendMail() {
-        $mailTo  = request()->input( 'mail_to' );
-        $orderId = request()->input( 'order_id' );
-        $rowId   = request()->input( 'row_id' );
+    public function sendMail( $requestArray = [] ) {
+
+        if ( ! empty( $requestArray ) ) {
+            $mailTo         = $requestArray['to'];
+            $rowId          = $requestArray['id'];
+            $template       = $requestArray['template'];
+            $subject        = $requestArray['subject'];
+            $includeInvoice = $requestArray['invoice'];
+        } else {
+            $mailTo         = request()->input( 'mail_to' );
+            $rowId          = request()->input( 'row_id' );
+            $template       = request()->input( 'template' );
+            $subject        = request()->input( 'subject' );
+            $includeInvoice = request()->input( 'include_invoice' );
+        }
+
 
         $filePath = eBayFunctions::getInvoice( $rowId, 'F' );
         $error    = 0;
@@ -82,14 +94,14 @@ class OrderController extends Controller {
             $mail->addAddress( $mailTo );     //Add a recipient
             $mail->addReplyTo( env( 'MAIL_FROM_ADDRESS' ), env( 'MAIL_FROM_NAME' ) );
             //Attachments
-            if ( isset( $_POST['include_invoice'] ) ) {
+            if ( isset( $includeInvoice ) ) {
                 $mail->addAttachment( $filePath );         //Add attachments
             }
             //Content
             $mail->isHTML( true );                                  //Set email format to HTML
-            $mail->Subject = $_POST['subject'];
-            $mail->Body    = $_POST['template'];
-            $mail->AltBody = $_POST['template'];
+            $mail->Subject = $subject;
+            $mail->Body    = $template;
+            $mail->AltBody = $template;
             $mail->send();
             $message = 'Email has been sent';
         } catch ( Exception $e ) {
@@ -136,6 +148,7 @@ class OrderController extends Controller {
         $tempD['ordered_date']    = eBayFunctions::getDisplayDate( $order->ordered_date );
         $tempD['order_id']        = $order->order_id;
         $tempD['buyer']           = $order->buyer;
+        $tempD['country']         = $order->country;
 
         $tAddress = $invoiceDetails['buyer_name'] . "<br>" . $invoiceDetails['address'] . ",<br>";
         if ( ! empty( $invoiceDetails['address_2'] ) ) {
@@ -151,6 +164,10 @@ class OrderController extends Controller {
         $tempD['order_status']    = $order->order_status;
         $tempD['invoice_details'] = $invoiceDetails;
         $tempD['order_detail']    = json_decode( $order->order_detail );
+        $tempD['wa']['received']  = $order->whatsapp_received;
+        $tempD['wa']['shipped']   = $order->whatsapp_shipped;
+        $tempD['wa']['delivered'] = $order->whatsapp_delivered;
+        $tempD['ea']['received']  = $order->email_complete;
         $tempD['id']              = $order->id;
 
         return $tempD;

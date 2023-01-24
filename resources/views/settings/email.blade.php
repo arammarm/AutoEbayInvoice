@@ -101,9 +101,9 @@
                         let content = res.data.template_content;
                         let active = res.data.active;
 
-                        $('[name="template_name"]').prop('disabled', false);
+                        $('[name="template_name"]').prop('readonly', false);
                         if (res.data?.auto === true) {
-                            $('[name="template_name"]').prop('disabled', true);
+                            $('[name="template_name"]').prop('readonly', true);
                         }
 
 

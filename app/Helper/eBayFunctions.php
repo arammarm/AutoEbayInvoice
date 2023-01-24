@@ -35,8 +35,8 @@ class eBayFunctions {
 
         if ( ! empty( $orderArray ) ) {
             foreach ( $orderArray as $order ) {
-                $invoiceCount = Order::select( 'id' )->where( 'country', (string) $order['ShippingAddress']->Country )->count();
-                $ref          = "EBAY " . (string) $order['ShippingAddress']->Country . " " . sprintf( "%05d", ( $invoiceCount + 1 ) );
+                $invoiceCount   = Order::select( 'id' )->where( 'country', (string) $order['ShippingAddress']->Country )->count();
+                $ref            = "EBAY " . (string) $order['ShippingAddress']->Country . " " . sprintf( "%05d", ( $invoiceCount + 1 ) );
                 $purchaseNumber = eBayFunctions::getSalesRecordNumber( json_encode( $order ) );
 
                 $orderDetails = Order::where( 'order_id', $order['OrderID'] )->first();
@@ -141,12 +141,25 @@ class eBayFunctions {
         return number_format( (float) ( $price - ( $price / $ivaCal ) ), 2, '.', '' );
     }
 
-    static function getMobileNumber( $invoiceDetails ) {
+    static function getMobileNumber( $invoiceDetails, $country = "ES" ) {
         if ( isset( $invoiceDetails['phone_no'] ) && ! empty( $invoiceDetails['phone_no'] ) ) {
-            return $invoiceDetails['phone_no'];
+            return eBayFunctions::getCountryPhoneCodeByCode( $country ) . $invoiceDetails['phone_no'];
         }
 
         return;
+    }
+
+    static function getEmail( $orderDetails ) {
+        $email = '';
+        if ( $orderDetails ) {
+            if ( $orderDetails->TransactionArray ) {
+                if ( $orderDetails->TransactionArray->Transaction ) {
+                    $email = ( is_array( $orderDetails->TransactionArray->Transaction ) ) ? $orderDetails->TransactionArray->Transaction[0]->Buyer->Email : $orderDetails->TransactionArray->Transaction->Buyer->Email;
+                }
+            }
+        }
+
+        return $email;
     }
 
     static function getItemId( $orderDetails ) {
@@ -412,6 +425,20 @@ class eBayFunctions {
 
     static function getDisplayDate( $dateTime ) {
         return date( 'd-m-Y H:i:s', strtotime( $dateTime ) );
+    }
+
+    static function getCountryPhoneCodeByCode( $code ) {
+        $json         = file_get_contents( public_path( 'json/country_list2.json' ) );
+        $countryArray = json_decode( $json );
+        $dialCode     = '00';
+
+        foreach ( $countryArray as $value ) {
+            if ( $value->isoCode == $code ) {
+                $dialCode = str_replace( '+', '', $value->dialCode );
+            }
+        };
+
+        return $dialCode;
     }
 
     static function getCountryByCode( $code ) {

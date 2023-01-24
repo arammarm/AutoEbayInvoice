@@ -48,6 +48,8 @@
                             <th>Total</th>
                             <th>Qty</th>
                             <th>Order Status</th>
+                            <th><i class="fab fa-whatsapp fa-2x"></i></th>
+                            <th><i class="far fa-envelope fa-2x"></i></th>
                             <th>Actions</th>
                         </tr>
                         </thead>
@@ -64,6 +66,14 @@
                                 <td>{{$order['total']}}</td>
                                 <td>{{$order['qty']}}</td>
                                 <td>{{$order['order_status']}}</td>
+                                <td>
+                                    <div style="width: 45px;">
+                                        @include('includes.alert_badge', ['value'=> $order['wa']['received'], 'title'=> 'Received'])
+                                        @include('includes.alert_badge', ['value'=> $order['wa']['shipped'], 'title'=> 'Shipped'])
+                                        @include('includes.alert_badge', ['value'=> $order['wa']['delivered'], 'title'=> 'Delivered'])
+                                    </div>
+                                </td>
+                                <td>  @include('includes.alert_badge', ['value'=> $order['ea']['received'], 'title'=> 'Received'])</td>
                                 <td>
 
                                     <!-- Default dropleft button -->
@@ -85,7 +95,7 @@
                                                         class="fas fa-envelope"></i> &nbsp; Send
                                                     Email</a></li>
                                             <li><a class="dropdown-item sendWhatsapp"
-                                                   data-mobile-num=" {{\App\Helper\eBayFunctions::getMobileNumber( $order['invoice_details'] )}}"
+                                                   data-mobile-num=" {{\App\Helper\eBayFunctions::getMobileNumber( $order['invoice_details'], $order['country'] )}}"
                                                    data-item-id="{{\App\Helper\eBayFunctions::getItemId( $order )}}" data-order-id="{{$order['order_id']}}"
                                                    data-toggle="modal" data-target="#whatsapp-message-modal"
                                                    href="javascript:void(0);"><i class="fab fa-whatsapp-square"></i> &nbsp; Send Whatsapp</a></li>
@@ -257,7 +267,7 @@
 
             $(document).on('click', '.sendWhatsapp', function () {
                 $('input[name="order_id"]').val($(this).attr('data-order-id'));
-                $('input[name="mobile_number"]').val("+34" + $(this).attr('data-mobile-num'));
+                $('input[name="mobile_number"]').val($(this).attr('data-mobile-num'));
                 $('input[name="purchase_link"]').val("https://ebay.es/itm/" + $(this).attr('data-item-id'));
                 $('textarea[name="template"]').val("Order Number: " + $(this).attr('data-order-id'));
                 $('#whatsapp_template').val('');
@@ -278,9 +288,8 @@
                     }
                 }).fail(() => {
                     toastr.error('Could not get response from the request', 'Request failed');
-                    ;
                 })
-            })
+            });
 
             $(document).on('submit', '#sendWhatsappMessageForm', function () {
                 let mobileNum = $('input[name="mobile_number"]').val().replace(/ /g, '');
