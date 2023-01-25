@@ -12,10 +12,9 @@ use Illuminate\Http\Request;
 
 class CronController extends Controller {
     public function runAlerts() {
-
-        WhatsappTemplate::requiredTemplate();
         EmailTemplate::requiredTemplate();
-        $orders = Order::where( 'ordered_date', '>=', Carbon::now()->subDays( 11 ) )->get();
+        $orders   = Order::where( 'ordered_date', '>=', Carbon::now()->subDays( 11 ) )->get();
+        $whatsapp = new WhatsappHelper();
 
         foreach ( $orders as $order ) {
             $invoiceDetails = eBayFunctions::constructInvoiceDetailsArray( $order, json_decode( $order->invoice_details, true ) );
@@ -26,26 +25,24 @@ class CronController extends Controller {
             $email          = eBayFunctions::getEmail( $orderDetails );
             $mobileNumber   = eBayFunctions::getMobileNumber( $invoiceDetails, $order->country );
 
-
             if ( $orderedDate->lessThan( Carbon::parse( '2023-01-20' ) ) ) {
                 continue;
             }
 
-            $whatsapp = new WhatsappHelper();
 
-            if ( ! $order->whatsapp_received ) {
-                $whatsapp->sendWAMessage( $mobileNumber, 'auto_received_order', $isEnglish );
-                $order->update( [ 'whatsapp_received' => 1, 'whatsapp_received_date' => Carbon::now() ] );
-            }
-            if ( ! $order->whatsapp_shipped && $orderedDate->diffInDays( $now ) > 0 ) {
-                $whatsapp->sendWAMessage( $mobileNumber, 'auto_shipped_order', $isEnglish );
-
-                $order->update( [ 'whatsapp_shipped' => 1, 'whatsapp_shipped_date' => Carbon::now() ] );
-            }
-            if ( ! $order->whatsapp_delivered && $orderedDate->diffInDays( $now ) > 9 ) {
-                $whatsapp->sendWAMessage( $mobileNumber, 'auto_delivered_order', $isEnglish );
-                $order->update( [ 'whatsapp_delivered' => 1, 'whatsapp_delivered_date' => Carbon::now() ] );
-            }
+//            if ( ! $order->whatsapp_received ) {
+//                $whatsapp->sendWAMessage( $mobileNumber, 'auto_received_order', $isEnglish );
+//                $order->update( [ 'whatsapp_received' => 1, 'whatsapp_received_date' => Carbon::now() ] );
+//            }
+//            if ( ! $order->whatsapp_shipped && $orderedDate->diffInDays( $now ) > 0 ) {
+//                $whatsapp->sendWAMessage( $mobileNumber, 'auto_shipped_order', $isEnglish );
+//
+//                $order->update( [ 'whatsapp_shipped' => 1, 'whatsapp_shipped_date' => Carbon::now() ] );
+//            }
+//            if ( ! $order->whatsapp_delivered && $orderedDate->diffInDays( $now ) > 9 ) {
+//                $whatsapp->sendWAMessage( $mobileNumber, 'auto_delivered_order', $isEnglish );
+//                $order->update( [ 'whatsapp_delivered' => 1, 'whatsapp_delivered_date' => Carbon::now() ] );
+//            }
 
             if ( $order->order_status == 'Completed' && $orderedDate->diffInDays( $now ) > 0 && $order->email_complete == 0 ) {
                 $orderController = new OrderController();

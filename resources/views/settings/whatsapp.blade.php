@@ -37,11 +37,10 @@
                             <button class="btn btn-primary btn-sm editTemplate"
                                     data-id="{{ $tpl->id }}">Edit
                             </button>
-                            @if(!in_array($tpl->template_name,\App\Models\WhatsappTemplate::$requiredTemplates))
-                                <button class="btn btn-danger btn-sm removeTemplate"
-                                        data-id="{{ $tpl->id }}">Remove
-                                </button>
-                            @endif
+                            <button class="btn btn-danger btn-sm removeTemplate"
+                                    data-id="{{ $tpl->id }}">Remove
+                            </button>
+
                         </td>
                     </tr>
                 @endforeach

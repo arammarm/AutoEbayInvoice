@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Helper\eBayFunctions;
+use App\Http\Controllers\CronController;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -28,8 +29,9 @@ class Kernel extends ConsoleKernel {
         $schedule->call( function () {
             $ebay = new eBayFunctions();
             $ebay->downloadAndUpdateOrder();
-
-        } )->twiceDaily()->withoutOverlapping();
+            $cron = new CronController();
+            $cron->runAlerts();
+        } )->twiceDaily()->name('download-order-and-update')->withoutOverlapping();
     }
 
     /**

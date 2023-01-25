@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class SettingsController extends Controller {
     public function __construct() {
-        WhatsappTemplate::requiredTemplate();
         EmailTemplate::requiredTemplate();
     }
 
@@ -35,10 +34,6 @@ class SettingsController extends Controller {
     public function getWATemplate( $id ) {
         $rec       = WhatsappTemplate::where( 'id', $id )->first();
         $rec->auto = false;
-        if ( in_array( $rec->template_name, WhatsappTemplate::$requiredTemplates ) ) {
-            $rec->auto = true;
-        }
-
         return response()->json( [ 'error' => 0, 'data' => $rec ] );
     }
 
