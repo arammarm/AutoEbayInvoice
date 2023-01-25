@@ -19,10 +19,10 @@ class WhatsappHelper {
     const T_ORDER_SHIPPED = 'ebay_invoice_shipped';
     const T_ORDER_DELIVERED = 'ebay_invoice_delivered';
 
-    public function sendWAMessage( $toNumber, $template, $isEnglish ) {
+    public function sendWAMessage( $toNumber, $template, $isEnglish, $params = [] ) {
 
         try {
-            $response = $this->_sendWAMessage( $toNumber, $template, $isEnglish );
+            $response = $this->_sendWAMessage( $toNumber, $template, $isEnglish, $params );
 
             print_r( $response );
             die();
@@ -42,24 +42,36 @@ class WhatsappHelper {
     }
 
 
-    private function _sendWAMessage( $toNumber, $template, $isEnglish ) {
+    private function _sendWAMessage( $toNumber, $template, $isEnglish, $paramArr = [] ) {
         $headers = [
             'Content-Type: application/json',
             'Authorization: Bearer ' . env( 'WA_TOKEN' )
         ];
-        $lang    = 'en_US';
-//        $lang    = 'en_UK';
+        $lang    = 'en_UK';
         if ( ! $isEnglish ) {
-            $lang = 'es_ES';
+            $lang = 'es';
         }
+
         $body = [
             "messaging_product" => "whatsapp",
             "recipient_type"    => "individual",
             "to"                => $toNumber,
             "type"              => "template",
-            "template"          => [ "name" => $template, "language" => [ "code" => $lang ] ]
+            "template"          => [
+                "name"     => $template,
+                "language" => [ "code" => $lang ]
+            ]
 
         ];
+
+        if ( ! empty( $paramArr ) ) {
+            $body['template']['components'][0]['type']       = 'body';
+            $body['template']['components'][0]['parameters'] = [];
+            foreach ( $paramArr as $item ) {
+                $body['template']['components'][0]['parameters'][] = [ 'type' => 'text', 'text' => $item ];
+            }
+        }
+
 
         return $this->sendCurl( 'POST', "https://graph.facebook.com/" . self::$apiVersion . "/" . self::$phoneId . "/messages", $headers, json_encode( $body ) );
     }
