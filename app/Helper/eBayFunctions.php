@@ -307,11 +307,11 @@ class eBayFunctions {
                 </div>
             </div>
             <div>
-                <h2 style="margin-top:50px;display:initial;text-align:center">FACTURA ORDINARIA</h2>
+                <h2 style="margin-top:50px;display:initial;text-align:center">FACTURA SIMPLIFICADA</h2>
             </div>
             <div>
                 <div style="width:40%;float:left">
-                    <h4 style="margin-bottom:0px;font-size:12px">DATOS DE FACTURA ORDINARIA</h4>
+                    <h4 style="margin-bottom:0px;font-size:12px">DATOS DE FACTURA SIMPLIFICADA</h4>
                     <hr/>
                     <div style="margin-bottom:5px;font-size:11px;">Número: <b>' . $invoiceDetails['numero'] . '</b></div>
                     <div style="font-size:11px;margin-bottom:5px">Fecha: <b>' . $invoiceDetails['fetcha'] . '</b></div>
