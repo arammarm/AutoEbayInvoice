@@ -15,8 +15,9 @@ class CronController extends Controller {
         EmailTemplate::requiredTemplate();
         $orders   = Order::where( 'ordered_date', '>=', Carbon::now()->subDays( 11 ) )->get();
         $whatsapp = new WhatsappHelper();
-        file_put_contents( public_path( 'cron_history.log' ), "\nRun at " . Carbon::now()->toString(), FILE_APPEND );
-        die();
+        
+//        file_put_contents( public_path( 'cron_history.log' ), "\nRun at " . Carbon::now()->toString(), FILE_APPEND );
+//        die();
 
         foreach ( $orders as $order ) {
             $invoiceDetails = eBayFunctions::constructInvoiceDetailsArray( $order, json_decode( $order->invoice_details, true ) );
