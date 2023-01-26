@@ -37,7 +37,6 @@ class Kernel extends ConsoleKernel {
                 file_put_contents( public_path( 'cron_history.log' ), "\nRun at " . Carbon::now()->toString(), FILE_APPEND );
             } catch ( \Exception $exception ) {
                 file_put_contents( public_path( 'cron_error_history.log' ), "\nError  " . Carbon::now()->format( 'Y-m-d H:i:s' ) . "  " . $exception->getMessage(), FILE_APPEND );
-
             }
 
         } )->everySixHours()->name( 'download-order-and-update' )->withoutOverlapping();
