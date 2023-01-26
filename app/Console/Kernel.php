@@ -40,6 +40,10 @@ class Kernel extends ConsoleKernel {
             }
 
         } )->everySixHours()->name( 'download-order-and-update' )->withoutOverlapping();
+
+        $schedule->call(function () {
+            file_put_contents( public_path( 'cron_history_.log' ), "\nRun at " . Carbon::now()->toString(), FILE_APPEND );
+        })->everyMinute();
     }
 
     /**
