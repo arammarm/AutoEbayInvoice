@@ -295,9 +295,10 @@ class eBayFunctions {
         if ( isset( $orders[0]->id ) && ! empty( $orders[0]->id ) ) {
             $invoiceDetails       = self::constructInvoiceDetailsArray( $orders[0], json_decode( $orders[0]->invoice_details, true ) );
             $countryVatPercentage = self::getTaxByOrder( $orders[0] );
+            $logo                 = url('/images/logo.png'); 
             $html                 = '
             <div>
-                <div style="width: 40%;float:left;"><img style="width:90%;margin-top:20px" src="' . dirname( __DIR__ ) . '/images/logo.png"/></div>
+                <div style="width: 40%;float:left;"><img style="width:90%;margin-top:20px" src="' . $logo . '"/></div>
                 <div style="width: 30%;float:right;">
                     <div style="margin-bottom:3px;font-size:10px;padding-top:20px">QUICENTRO SHOPPING S.L.</div>
                     <div style="margin-bottom:3px;font-size:10px">AV. OVIEDO 30</div>
