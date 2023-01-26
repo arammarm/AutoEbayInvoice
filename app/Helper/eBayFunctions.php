@@ -364,7 +364,7 @@ class eBayFunctions {
                                         <td style="width:10%;font-size:11px;text-align:left">' . number_format( floatval( $invoiceDetails['discount'][ $count ] ), 2, ',', '.' ) . '</td>
                                         <td style="width:10%;font-size:11px;text-align:left">' . $invoiceDetails['qty'][ $count ] . '</td>
                                         <td style="width:10%;font-size:11px;text-align:left">' . number_format( floatval( $invoiceDetails['sub_total'][ $count ] ), 2, ',', '.' ) . '</td>
-                                        <td style="width:10%;font-size:11px;text-align:left">IVA ' . number_format( floatval( $invoiceDetails['tax'][ $count ] ), 2, ',', '.' ) . '%</td>
+                                        <td style="width:10%;font-size:11px;text-align:left">IVA ' . $countryVatPercentage . '%</td>
                                     </tr>';
                 $count ++;
             }
