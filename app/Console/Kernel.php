@@ -28,12 +28,18 @@ class Kernel extends ConsoleKernel {
     protected function schedule( Schedule $schedule ) {
 
         $schedule->call( function () {
-            $ebay = new eBayFunctions();
-            $ebay->downloadAndUpdateOrder();
-            $cron = new CronController();
-            $cron->runAlerts();
+            try {
+                $ebay = new eBayFunctions();
+                $ebay->downloadAndUpdateOrder();
+                $cron = new CronController();
+                $cron->runAlerts();
 
-            file_put_contents( public_path( 'cron_history.log' ), "\nRun at " . Carbon::now()->toString(), FILE_APPEND );
+                file_put_contents( public_path( 'cron_history.log' ), "\nRun at " . Carbon::now()->toString(), FILE_APPEND );
+
+            } catch ( \Exception $exception ) {
+                file_put_contents( public_path( 'cron_error_history.log' ), "\nError  " . Carbon::now()->format( 'Y-m-d H:i:s' ) . "  " . $exception->getMessage(), FILE_APPEND );
+
+            }
 
         } )->twiceDaily()->name( 'download-order-and-update' )->withoutOverlapping();
     }
