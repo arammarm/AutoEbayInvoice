@@ -47,7 +47,7 @@ class WhatsappHelper {
             'Content-Type: application/json',
             'Authorization: Bearer ' . env( 'WA_TOKEN' )
         ];
-        $lang    = 'en_UK';
+        $lang    = 'en_GB';
         if ( ! $isEnglish ) {
             $lang = 'es';
         }

@@ -29,12 +29,7 @@ class CronController extends Controller {
             $mobileNumber   = eBayFunctions::getMobileNumber( $invoiceDetails, $order->country );
             $ebayLink       = "https://ebay.es/itm/" . eBayFunctions::getItemId( $order );
 
-//
-//            $whatsapp->sendWAMessage( 94750840509, WhatsappHelper::T_ORDER_RECEIVED, $isEnglish, [ $order->buyer, $ebayLink ] );
-//
-//            die();
-
-            $whatsappEnabled = false; // TODO: must be true.
+            $whatsappEnabled = true;
 
             if ( $orderedDate->lessThan( Carbon::parse( '2023-01-20' ) ) ) {
                 continue;
