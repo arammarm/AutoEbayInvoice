@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Helper\eBayFunctions;
 use App\Http\Controllers\CronController;
+use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -31,7 +32,10 @@ class Kernel extends ConsoleKernel {
             $ebay->downloadAndUpdateOrder();
             $cron = new CronController();
             $cron->runAlerts();
-        } )->twiceDaily()->name('download-order-and-update')->withoutOverlapping();
+
+            file_put_contents( public_path( 'cron_history.log' ), "\nRun at " . Carbon::now()->toString(), FILE_APPEND );
+
+        } )->twiceDaily()->name( 'download-order-and-update' )->withoutOverlapping();
     }
 
     /**
