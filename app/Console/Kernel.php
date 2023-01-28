@@ -43,6 +43,9 @@ class Kernel extends ConsoleKernel {
         $schedule->call( function () {
             file_put_contents( public_path( 'cron_history_30min.log' ), "\nRun at " . Carbon::now()->toString(), FILE_APPEND );
         } )->everyThirtyMinutes();
+        $schedule->call( function () {
+            file_put_contents( public_path( 'cron_history_1min.log' ), "\nRun at " . Carbon::now()->toString(), FILE_APPEND );
+        } )->everyMinute();
     }
 
     /**
