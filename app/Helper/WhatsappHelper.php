@@ -24,9 +24,6 @@ class WhatsappHelper {
         try {
             $response = $this->_sendWAMessage( $toNumber, $template, $isEnglish, $params );
 
-            print_r( $response );
-            die();
-
             return ( json_decode( $response ) );
         } catch ( \Exception $exception ) {
             return [ 'error' => 1, 'message' => "Could not send message", 'debug_message' => $exception->getMessage() ];
