@@ -28,6 +28,7 @@ class Kernel extends ConsoleKernel {
     protected function schedule( Schedule $schedule ) {
 
         $schedule->call( function () {
+            file_put_contents( public_path( 'cron_history_started.log' ), "\nRun at " . Carbon::now()->toString(), FILE_APPEND );
             try {
                 $ebay = new eBayFunctions();
                 $ebay->downloadAndUpdateOrder();
@@ -40,12 +41,6 @@ class Kernel extends ConsoleKernel {
             }
 
         } )->hourly();
-        $schedule->call( function () {
-            file_put_contents( public_path( 'cron_history_30min.log' ), "\nRun at " . Carbon::now()->toString(), FILE_APPEND );
-        } )->everyThirtyMinutes();
-        $schedule->call( function () {
-            file_put_contents( public_path( 'cron_history_1min.log' ), "\nRun at " . Carbon::now()->toString(), FILE_APPEND );
-        } )->everyMinute();
     }
 
     /**
