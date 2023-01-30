@@ -13,12 +13,7 @@ use Illuminate\Http\Request;
 class CronController extends Controller {
     public function runAlerts() {
         EmailTemplate::requiredTemplate();
-        $orders   = Order::where( 'ordered_date', '>=', Carbon::now()->subDays( 11 ) )->
-        whereIn( 'order_id', [
-            '18-09641-28086',
-            '22-09639-64560',
-            '23-09639-22815'
-        ] )->get();
+        $orders   = Order::where( 'ordered_date', '>=', Carbon::now()->subDays( 11 ) )->get();
         $whatsapp = new WhatsappHelper();
 
 //        file_put_contents( public_path( 'cron_history.log' ), "\nRun at " . Carbon::now()->toString(), FILE_APPEND );
@@ -44,7 +39,7 @@ class CronController extends Controller {
             if ( $whatsappEnabled ) {
                 if ( ! $order->whatsapp_received ) {
                     $response = $whatsapp->sendWAMessage( $mobileNumber, WhatsappHelper::T_ORDER_RECEIVED, $isEnglish, [ $order->buyer, $ebayLink ] );
-                    
+
                     $order->update( [ 'whatsapp_received' => ! isset( $response->error ) ? 1 : 2, 'whatsapp_received_date' => Carbon::now() ] );
                 }
                 if ( ! $order->whatsapp_shipped && $orderedDate->diffInDays( $now ) > 0 ) {
