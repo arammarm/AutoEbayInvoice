@@ -44,11 +44,7 @@ class CronController extends Controller {
             if ( $whatsappEnabled ) {
                 if ( ! $order->whatsapp_received ) {
                     $response = $whatsapp->sendWAMessage( $mobileNumber, WhatsappHelper::T_ORDER_RECEIVED, $isEnglish, [ $order->buyer, $ebayLink ] );
-
-
-                    print_r( $response );
-                    continue;
-
+                    
                     $order->update( [ 'whatsapp_received' => ! isset( $response->error ) ? 1 : 2, 'whatsapp_received_date' => Carbon::now() ] );
                 }
                 if ( ! $order->whatsapp_shipped && $orderedDate->diffInDays( $now ) > 0 ) {
