@@ -13,13 +13,19 @@ use Illuminate\Http\Request;
 class CronController extends Controller {
     public function runAlerts() {
         EmailTemplate::requiredTemplate();
-        $orders   = Order::where( 'ordered_date', '>=', Carbon::now()->subDays( 11 ) )->get();
+        $orders   = Order::where( 'ordered_date', '>=', Carbon::now()->subDays( 11 ) )->
+        whereIn( 'order_id', [
+            '18-09641-28086',
+            '22-09639-64560',
+            '23-09639-22815'
+        ] )->get();
         $whatsapp = new WhatsappHelper();
 
 //        file_put_contents( public_path( 'cron_history.log' ), "\nRun at " . Carbon::now()->toString(), FILE_APPEND );
 //        die();
 
         foreach ( $orders as $order ) {
+
             $invoiceDetails = eBayFunctions::constructInvoiceDetailsArray( $order, json_decode( $order->invoice_details, true ) );
             $orderedDate    = Carbon::createFromDate( $order->ordered_date );
             $now            = Carbon::now();
@@ -37,17 +43,22 @@ class CronController extends Controller {
 
             if ( $whatsappEnabled ) {
                 if ( ! $order->whatsapp_received ) {
-                    $whatsapp->sendWAMessage( $mobileNumber, WhatsappHelper::T_ORDER_RECEIVED, $isEnglish, [ $order->buyer, $ebayLink ] );
-                    $order->update( [ 'whatsapp_received' => 1, 'whatsapp_received_date' => Carbon::now() ] );
+                    $response = $whatsapp->sendWAMessage( $mobileNumber, WhatsappHelper::T_ORDER_RECEIVED, $isEnglish, [ $order->buyer, $ebayLink ] );
+                    if ( ! isset( $response->error ) ) {
+                        $order->update( [ 'whatsapp_received' => 1, 'whatsapp_received_date' => Carbon::now() ] );
+                    }
                 }
                 if ( ! $order->whatsapp_shipped && $orderedDate->diffInDays( $now ) > 0 ) {
                     $whatsapp->sendWAMessage( $mobileNumber, WhatsappHelper::T_ORDER_SHIPPED, $isEnglish, [ $order->buyer, $order->order_id ] );
-
-                    $order->update( [ 'whatsapp_shipped' => 1, 'whatsapp_shipped_date' => Carbon::now() ] );
+                    if ( ! isset( $response->error ) ) {
+                        $order->update( [ 'whatsapp_shipped' => 1, 'whatsapp_shipped_date' => Carbon::now() ] );
+                    }
                 }
                 if ( ! $order->whatsapp_delivered && $orderedDate->diffInDays( $now ) > 9 ) {
                     $whatsapp->sendWAMessage( $mobileNumber, WhatsappHelper::T_ORDER_DELIVERED, $isEnglish );
-                    $order->update( [ 'whatsapp_delivered' => 1, 'whatsapp_delivered_date' => Carbon::now(), [ $order->buyer ] ] );
+                    if ( ! isset( $response->error ) ) {
+                        $order->update( [ 'whatsapp_delivered' => 1, 'whatsapp_delivered_date' => Carbon::now(), [ $order->buyer ] ] );
+                    }
                 }
             }
 

@@ -48,7 +48,6 @@ class WhatsappHelper {
         if ( ! $isEnglish ) {
             $lang = 'es';
         }
-
         $body = [
             "messaging_product" => "whatsapp",
             "recipient_type"    => "individual",
@@ -60,7 +59,6 @@ class WhatsappHelper {
             ]
 
         ];
-
         if ( ! empty( $paramArr ) ) {
             $body['template']['components'][0]['type']       = 'body';
             $body['template']['components'][0]['parameters'] = [];
