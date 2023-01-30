@@ -44,20 +44,22 @@ class CronController extends Controller {
             if ( $whatsappEnabled ) {
                 if ( ! $order->whatsapp_received ) {
                     $response = $whatsapp->sendWAMessage( $mobileNumber, WhatsappHelper::T_ORDER_RECEIVED, $isEnglish, [ $order->buyer, $ebayLink ] );
-                    if ( ! isset( $response->error ) ) {
-                        $order->update( [ 'whatsapp_received' => 1, 'whatsapp_received_date' => Carbon::now() ] );
-                    }
+                    $order->update( [ 'whatsapp_received' => ! isset( $response->error ) ? 1 : 2, 'whatsapp_received_date' => Carbon::now() ] );
                 }
                 if ( ! $order->whatsapp_shipped && $orderedDate->diffInDays( $now ) > 0 ) {
-                    $whatsapp->sendWAMessage( $mobileNumber, WhatsappHelper::T_ORDER_SHIPPED, $isEnglish, [ $order->buyer, $order->order_id ] );
+                    $response = $whatsapp->sendWAMessage( $mobileNumber, WhatsappHelper::T_ORDER_SHIPPED, $isEnglish, [ $order->buyer, $order->order_id ] );
                     if ( ! isset( $response->error ) ) {
-                        $order->update( [ 'whatsapp_shipped' => 1, 'whatsapp_shipped_date' => Carbon::now() ] );
+                        $order->update( [ 'whatsapp_shipped' => ! isset( $response->error ) ? 1 : 2, 'whatsapp_shipped_date' => Carbon::now() ] );
                     }
                 }
                 if ( ! $order->whatsapp_delivered && $orderedDate->diffInDays( $now ) > 9 ) {
-                    $whatsapp->sendWAMessage( $mobileNumber, WhatsappHelper::T_ORDER_DELIVERED, $isEnglish );
+                    $response = $whatsapp->sendWAMessage( $mobileNumber, WhatsappHelper::T_ORDER_DELIVERED, $isEnglish );
                     if ( ! isset( $response->error ) ) {
-                        $order->update( [ 'whatsapp_delivered' => 1, 'whatsapp_delivered_date' => Carbon::now(), [ $order->buyer ] ] );
+                        $order->update( [
+                            'whatsapp_delivered'      => ! isset( $response->error ) ? 1 : 2,
+                            'whatsapp_delivered_date' => Carbon::now(),
+                            [ $order->buyer ]
+                        ] );
                     }
                 }
             }
