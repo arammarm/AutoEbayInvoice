@@ -56,7 +56,7 @@ class OrderController extends Controller {
         return redirect()->back()->with( [ 'error' => $error, 'message' => $message ] );
     }
 
-    public function sendMail( $requestArray = [] ) {
+    public function sendMail( $requestArray = [], $cron = false ) {
 
         if ( ! empty( $requestArray ) ) {
             $mailTo         = $requestArray['to'];
@@ -72,11 +72,10 @@ class OrderController extends Controller {
             $includeInvoice = request()->input( 'include_invoice' );
         }
 
-
-        $filePath = eBayFunctions::getInvoice( $rowId, 'F' );
-        $error    = 0;
-        $mail     = new PHPMailer( true );
         try {
+            $filePath = eBayFunctions::getInvoice( $rowId, 'F' );
+            $error    = 0;
+            $mail     = new PHPMailer( true );
             //Server settings
             // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
             $mail->SMTPDebug = false;                      //Enable verbose debug output
@@ -104,11 +103,16 @@ class OrderController extends Controller {
             $mail->AltBody = $template;
             $mail->send();
             $message = 'Email has been sent';
+            unlink( $filePath );
+
         } catch ( Exception $e ) {
             $error   = 1;
             $message = "Email could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
-        unlink( $filePath );
+
+        if ( $cron ) {
+            return [ 'error' => $error, 'message' => $message ];
+        }
 
         return redirect()->back()->with( [ 'error' => $error, 'message' => $message ] );
     }

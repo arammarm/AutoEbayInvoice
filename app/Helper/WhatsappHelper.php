@@ -15,14 +15,17 @@ class WhatsappHelper {
     private static $phoneId = '115414464778478';
     private static $apiVersion = 'v15.0';
 
-    const T_ORDER_RECEIVED = 'ebay_invoice_received';
-    const T_ORDER_SHIPPED = 'ebay_invoice_shipped';
-    const T_ORDER_DELIVERED = 'ebay_invoice_delivered';
+    const T_ORDER_RECEIVED = '8beaa43e-4cff-4f44-80e6-37dcea1bd329';
+    const T_ORDER_SHIPPED = '3058bd52-f5b7-48e5-80a6-0e00a685846c';
+    const T_ORDER_DELIVERED = 'ab7398f9-4317-4c82-a45c-41933feb1413';
+    const T_ORDER_RECEIVED_ES = '4dabcfbc-9311-403e-9acb-898209c92c4f';
+    const T_ORDER_SHIPPED_ES = '86c41ed6-611c-4963-bd75-7915c0d420e9';
+    const T_ORDER_DELIVERED_ES = 'ffe14f17-13d7-4e76-99c9-a63b9e0536c2';
 
-    public function sendWAMessage( $toNumber, $template, $isEnglish, $params = [] ) {
+    public function sendWAMessage( $toNumber, $template, $params = [] ) {
 
         try {
-            $response = $this->_sendWAMessage( $toNumber, $template, $isEnglish, $params );
+            $response = $this->_sendWAMessage( $toNumber, $template, $params );
 
             return ( json_decode( $response ) );
         } catch ( \Exception $exception ) {
@@ -39,36 +42,26 @@ class WhatsappHelper {
     }
 
 
-    private function _sendWAMessage( $toNumber, $template, $isEnglish, $paramArr = [] ) {
+    private function _sendWAMessage( $toNumber, $template, $paramArr = [] ) {
         $headers = [
             'Content-Type: application/json',
-            'Authorization: Bearer ' . env( 'WA_TOKEN' )
+            'Authorization: Bearer ' . env( 'WA_TOKEN_WASAPI' )
         ];
-        $lang    = 'en_GB';
-        if ( ! $isEnglish ) {
-            $lang = 'es';
-        }
+
+        $paramArr = array_map( function ( $value, $key ) {
+            $_key = $key + 1;
+            return [ 'text' => "{{{$_key}}}", 'val' => $value ];
+        }, $paramArr, array_keys( $paramArr ) );
+
+
         $body = [
-            "messaging_product" => "whatsapp",
-            "recipient_type"    => "individual",
-            "to"                => $toNumber,
-            "type"              => "template",
-            "template"          => [
-                "name"     => $template,
-                "language" => [ "code" => $lang ]
-            ]
-
+            "recipients"   => $toNumber,
+            "template_id"  => $template,
+            "contact_type" => 'phone',
+            "body_vars"    => $paramArr,
         ];
-        if ( ! empty( $paramArr ) ) {
-            $body['template']['components'][0]['type']       = 'body';
-            $body['template']['components'][0]['parameters'] = [];
-            foreach ( $paramArr as $item ) {
-                $body['template']['components'][0]['parameters'][] = [ 'type' => 'text', 'text' => $item ];
-            }
-        }
 
-
-        return $this->sendCurl( 'POST', "https://graph.facebook.com/" . self::$apiVersion . "/" . self::$phoneId . "/messages", $headers, json_encode( $body ) );
+        return $this->sendCurl( 'POST', "https://api.wasapi.io/prod/api/v1/whatsapp-messages/send-template", $headers, json_encode( $body ) );
     }
 
 
