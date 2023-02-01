@@ -32,11 +32,14 @@ class CronController extends Controller {
             if ( $orderedDate->lessThan( Carbon::parse( '2023-01-20' ) ) ) {
                 continue;
             }
-            
+
             if ( $whatsappEnabled ) {
+
                 if ( ! $order->whatsapp_received ) {
+                    $whatsapp->saveContact( $order->buyer, $mobileNumber, $order->country, $email );
                     $response = $whatsapp->sendWAMessage( $mobileNumber, $isEnglish ? WhatsappHelper::T_ORDER_RECEIVED : WhatsappHelper::T_ORDER_RECEIVED_ES, [
                         $order->buyer,
+                        $order->order_id,
                         $ebayLink
                     ] );
                     $order->update( [
@@ -45,6 +48,7 @@ class CronController extends Controller {
                     ] );
                 }
                 if ( ! $order->whatsapp_shipped && $orderedDate->diffInDays( $now ) > 0 ) {
+                    $whatsapp->saveContact( $order->buyer, $mobileNumber, $order->country, $email );
                     $response = $whatsapp->sendWAMessage( $mobileNumber, $isEnglish ? WhatsappHelper::T_ORDER_SHIPPED : WhatsappHelper::T_ORDER_SHIPPED_ES, [
                         $order->buyer,
                         $order->order_id
@@ -57,8 +61,10 @@ class CronController extends Controller {
                     }
                 }
                 if ( ! $order->whatsapp_delivered && $orderedDate->diffInDays( $now ) > 9 ) {
+                    $whatsapp->saveContact( $order->buyer, $mobileNumber, $order->country, $email );
                     $response = $whatsapp->sendWAMessage( $mobileNumber, $isEnglish ? WhatsappHelper::T_ORDER_DELIVERED : WhatsappHelper::T_ORDER_DELIVERED_ES, [
-                        $order->buyer
+                        $order->buyer,
+                        $order->order_id,
                     ] );
                     if ( ! isset( $response->error ) ) {
                         $order->update( [

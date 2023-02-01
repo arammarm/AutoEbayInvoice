@@ -23,10 +23,8 @@ class WhatsappHelper {
     const T_ORDER_DELIVERED_ES = 'ffe14f17-13d7-4e76-99c9-a63b9e0536c2';
 
     public function sendWAMessage( $toNumber, $template, $params = [] ) {
-
         try {
             $response = $this->_sendWAMessage( $toNumber, $template, $params );
-
             return ( json_decode( $response ) );
         } catch ( \Exception $exception ) {
             return [ 'error' => 1, 'message' => "Could not send message", 'debug_message' => $exception->getMessage() ];
@@ -50,6 +48,7 @@ class WhatsappHelper {
 
         $paramArr = array_map( function ( $value, $key ) {
             $_key = $key + 1;
+
             return [ 'text' => "{{{$_key}}}", 'val' => $value ];
         }, $paramArr, array_keys( $paramArr ) );
 
@@ -64,6 +63,24 @@ class WhatsappHelper {
         return $this->sendCurl( 'POST', "https://api.wasapi.io/prod/api/v1/whatsapp-messages/send-template", $headers, json_encode( $body ) );
     }
 
+    public function saveContact( $name, $phoneNumber, $countryCode, $email ) {
+        $headers = [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . env( 'WA_TOKEN_WASAPI' )
+        ];
+
+        $body = [
+            "first_name"   => $name,
+            "last_name"    => '',
+            "email"        => $email,
+            "country_code" => $countryCode,
+            "phone"        => $phoneNumber,
+            "notes"        => 'eBay Customer',
+            "labels"       => [ 4606 ],
+        ];
+
+        return $this->sendCurl( 'POST', "https://api.wasapi.io/prod/api/v1/contacts", $headers, json_encode( $body ) );
+    }
 
     private function sendCurl( $method, $url, $headers, $body ) {
         $curl = curl_init();
