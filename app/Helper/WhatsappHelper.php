@@ -39,7 +39,6 @@ class WhatsappHelper {
         return Carbon::parse( $date )->format( 'd M Y' );
     }
 
-
     private function _sendWAMessage( $toNumber, $template, $paramArr = [] ) {
         $headers = [
             'Content-Type: application/json',
