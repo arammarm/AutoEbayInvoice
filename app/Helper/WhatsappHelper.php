@@ -14,13 +14,13 @@ class WhatsappHelper {
 
     private static $phoneId = '115414464778478';
     private static $apiVersion = 'v15.0';
-
-    const T_ORDER_RECEIVED = '8beaa43e-4cff-4f44-80e6-37dcea1bd329';
+ 
+    const T_ORDER_RECEIVED = 'd61eb143-6048-403e-855e-3b330050b9f3';
     const T_ORDER_SHIPPED = '3058bd52-f5b7-48e5-80a6-0e00a685846c';
-    const T_ORDER_DELIVERED = 'ab7398f9-4317-4c82-a45c-41933feb1413';
-    const T_ORDER_RECEIVED_ES = '4dabcfbc-9311-403e-9acb-898209c92c4f';
+    const T_ORDER_DELIVERED = 'b061aa06-dd66-4509-b627-2791a1d0c5f6';
+    const T_ORDER_RECEIVED_ES = 'a502d4de-7e1c-4cb2-991c-228cf41d483f';
     const T_ORDER_SHIPPED_ES = '86c41ed6-611c-4963-bd75-7915c0d420e9';
-    const T_ORDER_DELIVERED_ES = 'ffe14f17-13d7-4e76-99c9-a63b9e0536c2';
+    const T_ORDER_DELIVERED_ES = '90230d77-9116-4a43-9a1a-cae062ad1baf';
 
     public function sendWAMessage( $toNumber, $template, $params = [] ) {
         try {
